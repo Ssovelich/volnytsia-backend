@@ -15,7 +15,7 @@ const app = express();
 // Список дозволених доменів (локальний + домен на продакшені)
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://volnytsia.vercel.app/",
+  "https://volnytsia.vercel.app",
 ];
 
 app.use(cors({
