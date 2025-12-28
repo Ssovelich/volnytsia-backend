@@ -40,6 +40,7 @@ app.use(express.urlencoded({ extended: true })); // Читання даних ф
 
 // 5. Роути
 app.use("/api/awards", require("./routes/awards"));
+app.use("/api/members", require("./routes/members"));
 
 // 6. Обробка помилок (Error Handling)
 app.use((err, req, res, next) => {

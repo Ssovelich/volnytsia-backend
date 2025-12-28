@@ -8,14 +8,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "volnytsia_awards", // Назва папки в Cloudinary
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
-  },
-});
+// Функція-генератор сховища для різних папок
+const createStorage = (folderName) => {
+  return new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: folderName,
+      allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    },
+  });
+};
 
-const upload = multer({ storage: storage });
+// Залишаємо старий upload для зворотної сумісності (щоб відзнаки не зламалися)
+const upload = multer({ storage: createStorage("volnytsia_awards") });
 
-module.exports = { cloudinary, upload };
+// Створюємо окремий upload для учасників
+const uploadMembers = multer({ storage: createStorage("volnytsia_members") });
+
+module.exports = { cloudinary, upload, uploadMembers };
