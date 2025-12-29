@@ -30,8 +30,14 @@ app.use(cors({
     }
   },
   credentials: true, // Дозволяє передачу кукі (admin_token)
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+  allowedHeaders: [
+    "Content-Type", 
+    "Authorization", 
+    "Cache-Control", 
+    "Pragma", 
+    "Expires"
+  ]
 }));
 
 // 4. Middlewares
