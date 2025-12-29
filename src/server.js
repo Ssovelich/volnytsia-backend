@@ -47,6 +47,7 @@ app.use(express.urlencoded({ extended: true })); // Читання даних ф
 // 5. Роути
 app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
+app.use("/api/gallery-videos", require("./routes/galleryVideo"));
 
 // 6. Обробка помилок (Error Handling)
 app.use((err, req, res, next) => {
