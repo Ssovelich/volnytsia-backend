@@ -28,6 +28,33 @@ exports.createGalleryVideo = async (req, res) => {
   }
 };
 
+exports.updateGalleryVideo = async (req, res) => {
+  try {
+    const { title, url, order } = req.body;
+    const { id } = req.params;
+
+    const updatedVideo = await GalleryVideo.findByIdAndUpdate(
+      id,
+      {
+        title,
+        url,
+        order: order !== undefined ? order : 0,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedVideo) {
+      return res.status(404).json({ message: "Відео не знайдено" });
+    }
+
+    res.json(updatedVideo);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Помилка при оновленні відео", error: err.message });
+  }
+};
+
 exports.deleteGalleryVideo = async (req, res) => {
   try {
     const video = await GalleryVideo.findById(req.params.id);
