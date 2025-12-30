@@ -18,27 +18,29 @@ const allowedOrigins = [
   "https://volnytsia.vercel.app",
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log("CORS заблокував запит з origin:", origin);
-      callback(new Error("Політика CORS забороняє доступ з цього домену"));
-    }
-  },
-  credentials: true, // Дозволяє передачу кукі (admin_token)
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
-  allowedHeaders: [
-    "Content-Type", 
-    "Authorization", 
-    "Cache-Control", 
-    "Pragma", 
-    "Expires"
-  ]
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log("CORS заблокував запит з origin:", origin);
+        callback(new Error("Політика CORS забороняє доступ з цього домену"));
+      }
+    },
+    credentials: true, // Дозволяє передачу кукі (admin_token)
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Pragma",
+      "Expires",
+    ],
+  })
+);
 
 // 4. Middlewares
 app.use(express.json()); // Читання JSON
@@ -48,13 +50,14 @@ app.use(express.urlencoded({ extended: true })); // Читання даних ф
 app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
 app.use("/api/gallery-videos", require("./routes/galleryVideo"));
+app.use("/api/banners", require("./routes/banners"));
 
 // 6. Обробка помилок (Error Handling)
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
     message: "На сервері сталася помилка",
-    error: process.env.NODE_ENV === "development" ? err.message : {}
+    error: process.env.NODE_ENV === "development" ? err.message : {},
   });
 });
 
