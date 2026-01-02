@@ -25,4 +25,6 @@ const upload = multer({ storage: createStorage("volnytsia_awards") });
 // Створюємо окремий upload для учасників
 const uploadMembers = multer({ storage: createStorage("volnytsia_members") });
 
-module.exports = { cloudinary, upload, uploadMembers };
+const uploadBanners = multer({ storage: createStorage("volnytsia_banners") });
+
+module.exports = { cloudinary, upload, uploadMembers, uploadBanners };
