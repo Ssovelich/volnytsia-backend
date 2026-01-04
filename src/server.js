@@ -51,6 +51,8 @@ app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
 app.use("/api/gallery-videos", require("./routes/galleryVideo"));
 app.use("/api/banners", require("./routes/banners"));
+app.use("/api/socials", require("./routes/socials"));
+app.use("/api/copyright", require("./routes/copyright"));
 
 // 6. Обробка помилок (Error Handling)
 app.use((err, req, res, next) => {
