@@ -49,6 +49,7 @@ app.use(express.urlencoded({ extended: true })); // Читання даних ф
 // 5. Роути
 app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
+app.use("/api/leaders", require("./routes/leaders"));
 app.use("/api/gallery-videos", require("./routes/galleryVideo"));
 app.use("/api/banners", require("./routes/banners"));
 app.use("/api/socials", require("./routes/socials"));
