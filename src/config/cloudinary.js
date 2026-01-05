@@ -19,12 +19,12 @@ const createStorage = (folderName) => {
   });
 };
 
-// Залишаємо старий upload для зворотної сумісності (щоб відзнаки не зламалися)
 const upload = multer({ storage: createStorage("volnytsia_awards") });
 
-// Створюємо окремий upload для учасників
+const uploadLeaders = multer({ storage: createStorage("volnytsia_leaders") });
+
 const uploadMembers = multer({ storage: createStorage("volnytsia_members") });
 
 const uploadBanners = multer({ storage: createStorage("volnytsia_banners") });
 
-module.exports = { cloudinary, upload, uploadMembers, uploadBanners };
+module.exports = { cloudinary, upload, uploadLeaders, uploadMembers, uploadBanners };
