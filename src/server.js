@@ -51,6 +51,7 @@ app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
 app.use("/api/leaders", require("./routes/leaders"));
 app.use("/api/gallery-videos", require("./routes/galleryVideo"));
+app.use("/api/gallery-photos", require("./routes/galleryPhoto"));
 app.use("/api/banners", require("./routes/banners"));
 app.use("/api/socials", require("./routes/socials"));
 app.use("/api/copyright", require("./routes/copyright"));

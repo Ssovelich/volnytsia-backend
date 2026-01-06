@@ -27,4 +27,6 @@ const uploadMembers = multer({ storage: createStorage("volnytsia_members") });
 
 const uploadBanners = multer({ storage: createStorage("volnytsia_banners") });
 
-module.exports = { cloudinary, upload, uploadLeaders, uploadMembers, uploadBanners };
+const uploadGallery = multer({ storage: createStorage("volnytsia_gallery_photos") });
+
+module.exports = { cloudinary, upload, uploadLeaders, uploadMembers, uploadBanners, uploadGallery };
