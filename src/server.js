@@ -47,6 +47,10 @@ app.use(express.json()); // Читання JSON
 app.use(express.urlencoded({ extended: true })); // Читання даних форм
 
 // 5. Роути
+app.get("/api/ping", (req, res) => {
+  res.status(200).send("Server is awake");
+});
+
 app.use("/api/awards", require("./routes/awards"));
 app.use("/api/members", require("./routes/members"));
 app.use("/api/leaders", require("./routes/leaders"));
