@@ -55,30 +55,44 @@ exports.createAlbum = async (req, res) => {
 exports.updateAlbum = async (req, res) => {
   try {
     const { title, order } = req.body;
+    
+    // 1. Знаходимо альбом
     const album = await PhotoAlbum.findById(req.params.id);
+    if (!album) {
+      return res.status(404).json({ message: "Альбом не знайдено" });
+    }
 
-    if (!album) return res.status(404).json({ message: "Альбом не знайдено" });
+    // 2. Готуємо дані для оновлення текстових полів
+    const updateFields = {};
+    if (title !== undefined) updateFields.title = title;
+    if (order !== undefined) updateFields.order = Number(order);
 
-    const updateData = {};
-    if (title !== undefined) updateData.title = title;
-    if (order !== undefined) updateData.order = Number(order);
+    // 3. Обробка обкладинки (Cover)
+    if (req.files && req.files["cover"] && req.files["cover"][0]) {
+      const coverFile = req.files["cover"][0];
+      
+      // Видаляємо стару обкладинку (якщо вона є)
+      if (album.cover && album.cover.cloudinary_id) {
+        try {
+          await cloudinary.uploader.destroy(album.cover.cloudinary_id);
+        } catch (err) {
+          console.error("Cloudinary delete cover error:", err.message);
+        }
+      }
 
-    if (req.files["cover"]) {
-      const newCover = req.files["cover"][0];
-      await cloudinary.uploader.destroy(album.cover.cloudinary_id);
-
-      updateData.cover = {
-        url: newCover.path.replace(
+      updateFields.cover = {
+        url: coverFile.path.replace(
           "/upload/",
           "/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto:good/"
         ),
-        cloudinary_id: newCover.filename,
+        cloudinary_id: coverFile.filename,
       };
     }
 
-    let newPhotos = [];
-    if (req.files["images"] && req.files["images"].length > 0) {
-      newPhotos = req.files["images"].map((file) => ({
+    // 4. Підготовка масиву нових фото (Images)
+    let newPhotosData = [];
+    if (req.files && req.files["images"] && req.files["images"].length > 0) {
+      newPhotosData = req.files["images"].map((file) => ({
         full: file.path,
         thumbnail: file.path.replace(
           "/upload/",
@@ -88,19 +102,37 @@ exports.updateAlbum = async (req, res) => {
       }));
     }
 
+    // 5. Формуємо один спільний об'єкт оновлення
+    const updateQuery = { $set: updateFields };
+
+    // Додаємо $push ТІЛЬКИ якщо реально є нові фотографії
+    if (newPhotosData.length > 0) {
+      updateQuery.$push = {
+        photos: {
+          $each: newPhotosData,
+          $position: 0,
+        },
+      };
+    }
+
+    // 6. Виконуємо оновлення одним запитом
     const updatedAlbum = await PhotoAlbum.findByIdAndUpdate(
       req.params.id,
-      {
-        $set: updateData,
-        $push: { photos: { $each: newPhotos } },
-      },
-      { new: true }
+      updateQuery,
+      { new: true, runValidators: true }
     );
 
     res.json(updatedAlbum);
   } catch (err) {
+    // ВАЖЛИВО: цей лог покаже реальну причину в панелі Render (Logs)
+    console.error("====== UPDATE ERROR ======");
     console.error(err);
-    res.status(500).json({ message: "Помилка оновлення", error: err.message });
+    console.error("==========================");
+    
+    res.status(500).json({ 
+      message: "Помилка сервера при додаванні фото", 
+      error: err.message 
+    });
   }
 };
 

@@ -16,7 +16,10 @@ router.post(
 
 router.patch(
   "/:id",
-  uploadGallery.fields([{ name: "cover", maxCount: 1 }]),
+  uploadGallery.fields([
+    { name: "cover", maxCount: 1 },
+    { name: "images", maxCount: 50 },
+  ]),
   galleryPhotoController.updateAlbum
 );
 
