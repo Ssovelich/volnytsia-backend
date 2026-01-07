@@ -55,23 +55,19 @@ exports.createAlbum = async (req, res) => {
 exports.updateAlbum = async (req, res) => {
   try {
     const { title, order } = req.body;
-    
-    // 1. Знаходимо альбом
+
     const album = await PhotoAlbum.findById(req.params.id);
     if (!album) {
       return res.status(404).json({ message: "Альбом не знайдено" });
     }
 
-    // 2. Готуємо дані для оновлення текстових полів
     const updateFields = {};
     if (title !== undefined) updateFields.title = title;
     if (order !== undefined) updateFields.order = Number(order);
 
-    // 3. Обробка обкладинки (Cover)
     if (req.files && req.files["cover"] && req.files["cover"][0]) {
       const coverFile = req.files["cover"][0];
-      
-      // Видаляємо стару обкладинку (якщо вона є)
+
       if (album.cover && album.cover.cloudinary_id) {
         try {
           await cloudinary.uploader.destroy(album.cover.cloudinary_id);
@@ -89,7 +85,6 @@ exports.updateAlbum = async (req, res) => {
       };
     }
 
-    // 4. Підготовка масиву нових фото (Images)
     let newPhotosData = [];
     if (req.files && req.files["images"] && req.files["images"].length > 0) {
       newPhotosData = req.files["images"].map((file) => ({
@@ -102,10 +97,8 @@ exports.updateAlbum = async (req, res) => {
       }));
     }
 
-    // 5. Формуємо один спільний об'єкт оновлення
     const updateQuery = { $set: updateFields };
 
-    // Додаємо $push ТІЛЬКИ якщо реально є нові фотографії
     if (newPhotosData.length > 0) {
       updateQuery.$push = {
         photos: {
@@ -115,7 +108,6 @@ exports.updateAlbum = async (req, res) => {
       };
     }
 
-    // 6. Виконуємо оновлення одним запитом
     const updatedAlbum = await PhotoAlbum.findByIdAndUpdate(
       req.params.id,
       updateQuery,
@@ -124,14 +116,10 @@ exports.updateAlbum = async (req, res) => {
 
     res.json(updatedAlbum);
   } catch (err) {
-    // ВАЖЛИВО: цей лог покаже реальну причину в панелі Render (Logs)
-    console.error("====== UPDATE ERROR ======");
     console.error(err);
-    console.error("==========================");
-    
-    res.status(500).json({ 
-      message: "Помилка сервера при додаванні фото", 
-      error: err.message 
+    res.status(500).json({
+      message: "Помилка сервера при додаванні фото",
+      error: err.message,
     });
   }
 };
