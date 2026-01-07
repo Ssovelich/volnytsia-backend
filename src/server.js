@@ -31,7 +31,7 @@ app.use(
       }
     },
     credentials: true, // Дозволяє передачу кукі (admin_token)
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
