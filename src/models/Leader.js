@@ -4,7 +4,7 @@ const leaderSchems = new mongoose.Schema(
   {
     name: { type: String, required: true },
     surname: { type: String, required: true },
-    middle_name: { type: String, required: true },
+    middle_name: { type: String, required: false },
     role: { type: String, required: true },
     image: { type: String },
     description: { type: String },

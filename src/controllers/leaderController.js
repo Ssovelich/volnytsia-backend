@@ -18,7 +18,7 @@ exports.createLeader = async (req, res) => {
     const newLeader = new Leader({
       name,
       surname,
-      middle_name: middle_name || " ",
+      middle_name,
       role,
       description,
       source,
