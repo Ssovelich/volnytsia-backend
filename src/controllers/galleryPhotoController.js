@@ -24,14 +24,17 @@ exports.createAlbum = async (req, res) => {
     const coverData = {
       url: coverFile.path.replace(
         "/upload/",
-        "/upload/w_600,c_fill,g_auto,q_auto/"
+        "/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto:good/"
       ),
       cloudinary_id: coverFile.filename,
     };
 
     const photosData = photoFiles.map((file) => ({
       full: file.path,
-      thumbnail: file.path.replace("/upload/", "/upload/w_400,c_scale,q_auto/"),
+      thumbnail: file.path.replace(
+        "/upload/",
+        "/upload/w_600,h_450,c_fill,g_auto,f_auto,q_auto:good/"
+      ),
       cloudinary_id: file.filename,
     }));
 
