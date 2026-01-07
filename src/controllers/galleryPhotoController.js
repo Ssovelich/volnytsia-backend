@@ -56,6 +56,7 @@ exports.updateAlbum = async (req, res) => {
   try {
     const { title, order } = req.body;
     const album = await PhotoAlbum.findById(req.params.id);
+
     if (!album) return res.status(404).json({ message: "Альбом не знайдено" });
 
     const updateData = {};
@@ -69,21 +70,37 @@ exports.updateAlbum = async (req, res) => {
       updateData.cover = {
         url: newCover.path.replace(
           "/upload/",
-          "/upload/w_600,c_fill,g_auto,q_auto/"
+          "/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto:good/"
         ),
         cloudinary_id: newCover.filename,
       };
     }
 
+    let newPhotos = [];
+    if (req.files["images"] && req.files["images"].length > 0) {
+      newPhotos = req.files["images"].map((file) => ({
+        full: file.path,
+        thumbnail: file.path.replace(
+          "/upload/",
+          "/upload/w_600,h_450,c_fill,g_auto,f_auto,q_auto:good/"
+        ),
+        cloudinary_id: file.filename,
+      }));
+    }
+
     const updatedAlbum = await PhotoAlbum.findByIdAndUpdate(
       req.params.id,
-      { $set: updateData },
+      {
+        $set: updateData,
+        $push: { photos: { $each: newPhotos } },
+      },
       { new: true }
     );
 
     res.json(updatedAlbum);
   } catch (err) {
-    res.status(500).json({ message: "Помилка оновлення" });
+    console.error(err);
+    res.status(500).json({ message: "Помилка оновлення", error: err.message });
   }
 };
 
